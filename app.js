@@ -6,8 +6,6 @@ const userId = {
   _id: "637a5f3d892d9203975b47ea"
 };
 
-
-
 const express = require('express');
 const mongoose = require('mongoose');
 const fs = require('fs');
@@ -15,7 +13,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const usersRouter = require('./routes/users.js');
 const cardsRouter = require('./routes/cards.js');
-
 
 const app = express();
 
@@ -37,5 +34,4 @@ app.use('/cards', cardsRouter);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
-  // console.log(usersRouter);
 });

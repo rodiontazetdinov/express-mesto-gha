@@ -1,7 +1,6 @@
 const User = require('../models/User');
 
 const getUser = (req, res) => {
-  // res.send(req.params.userId);
   const id = req.params.userId;
   if (id === req.user._id) {
     User.findById({ _id: id })
@@ -27,12 +26,10 @@ const createUser = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-  // res.send('getUsers');
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name: name, about: about })
       .then(user => res.send({ data: user }))
       .catch(err => res.status(400).send({ message: 'Переданы некорректные данные' }));
-
 };
 
 const updateAvatar = (req, res) => {
