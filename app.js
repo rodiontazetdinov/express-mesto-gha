@@ -4,7 +4,7 @@ const URI = 'mongodb://localhost:27017/mestodb';
 //временный id
 const userId = {
   _id: "637a5f3d892d9203975b47ea"
-}
+};
 
 
 

@@ -6,7 +6,7 @@ const createCard = (req, res) => {
 
   Card.create({name: name, link: link, owner: id})
   .then(card => res.send({ data: card }))
-  .catch((err) => res.status(500).send(err));
+  .catch((err) => res.status(400).send('Переданы некорректные данные'));
 };
 
 const getCards = (req, res) => {
@@ -18,7 +18,7 @@ const getCards = (req, res) => {
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then(card => res.send({ data: card }))
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(err => res.status(404).send({ message: 'Карточка не найдена' }));
 };
 
 const addLike = (req, res) => {
