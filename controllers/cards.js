@@ -1,33 +1,34 @@
-const Card = require('../models/Card');
+const Card = require('../models/card');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
   const id = req.user._id;
 
-  Card.create({name: name, link: link, owner: id})
-  .then(card => res.send({ data: card }))
-  .catch((err) => res.status(400).send('Переданы некорректные данные'));
+  Card.create({ name, link, owner: id })
+    .then((card) => res.send({ data: card }))
+    .catch(() => res.status(400).send('Переданы некорректные данные'));
 };
 
 const getCards = (req, res) => {
   Card.find({})
-  .then(cards => res.send({ data: cards }))
-  .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((cards) => res.send({ data: cards }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then(card => res.send({ data: card }))
-    .catch(err => res.status(404).send({ message: 'Карточка не найдена' }));
+    .then((card) => res.send({ data: card }))
+    .catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
 };
 
 const addLike = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true },)
-  .then(card => res.send({ data: card }))
-  .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));;
+    { new: true },
+  )
+    .then((card) => res.send({ data: card }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 const deleteLike = (req, res) => {
@@ -36,8 +37,8 @@ const deleteLike = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-  .then(card => res.send({ data: card }))
-  .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => res.send({ data: card }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports = {
@@ -45,5 +46,5 @@ module.exports = {
   getCards,
   deleteCard,
   addLike,
-  deleteLike
-}
+  deleteLike,
+};
