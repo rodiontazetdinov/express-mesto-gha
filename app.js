@@ -1,7 +1,8 @@
 const { PORT = 3000 } = process.env;
 const URI = 'mongodb://localhost:27017/mestodb';
 
-//временный id
+// временный id
+
 const userId = {
   _id: '637a5f3d892d9203975b47ea'
 };
