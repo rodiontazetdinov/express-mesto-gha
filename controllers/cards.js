@@ -6,19 +6,19 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner: id })
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(400).send('Переданы некорректные данные'));
+    .catch(() => res.status(400).send('Переданы некорректные данные №1'));
 };
 
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка №2' }));
 };
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
+    .catch(() => res.status(404).send({ message: 'Карточка не найдена №3' }));
 };
 
 const addLike = (req, res) => {
@@ -28,7 +28,7 @@ const addLike = (req, res) => {
     { new: true },
   )
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка №4' }));
 };
 
 const deleteLike = (req, res) => {
@@ -38,7 +38,7 @@ const deleteLike = (req, res) => {
     { new: true },
   )
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка №%' }));
 };
 
 module.exports = {
