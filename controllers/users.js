@@ -20,7 +20,13 @@ const getUser = (req, res) => {
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 const createUser = (req, res) => {
