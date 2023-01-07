@@ -1,8 +1,8 @@
-class UserNotFoundError extends Error {
+class WrongDataError extends Error {
   constructor(message) {
     super(message);
     this.name = 'WrongDataError';
   }
 }
 
-module.exports = UserNotFoundError;
+module.exports = WrongDataError;

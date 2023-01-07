@@ -1,4 +1,4 @@
-const UserNotFoundError = require('../errors/UserNotFoundError');
+const NotFoundError = require('../errors/NotFoundError');
 const WrongDataError = require('../errors/WrongDataError');
 const User = require('../models/user');
 
@@ -9,11 +9,11 @@ const getUser = (req, res) => {
     if (id) {
       User.findById({ _id: id })
         .then((user) => {
-          if (!user && id.length < 24) {
+          if (!user && id.length !== 24) {
             throw new WrongDataError('WrongDataError');
           }
           if (!user) {
-            throw new UserNotFoundError('UserNotFoundError');
+            throw new NotFoundError('NotFoundError');
           }
           res.send({ data: user });
         })
@@ -24,7 +24,7 @@ const getUser = (req, res) => {
             res.status(400).send({ message: 'Переданы некорректные данные' });
           } else if (err.name === 'WrongDataError') {
             res.status(400).send({ message: 'Переданы некорректные данные' });
-          } else if (err.name === 'UserNotFoundError') {
+          } else if (err.name === 'NotFoundError') {
             res.status(404).send({ message: 'Пользователь не найден' });
           } else {
             res.status(500).send({ message: `Произошла ошибка ${err.name}` });

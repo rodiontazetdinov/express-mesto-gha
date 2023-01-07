@@ -1,5 +1,6 @@
 const Card = require('../models/card');
 const WrongDataError = require('../errors/WrongDataError');
+const NotFoundError = require('../errors/NotFoundError');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -31,7 +32,7 @@ const deleteCard = (req, res) => {
 const addLike = (req, res) => {
   const id = req.params.cardId;
   try {
-    if (id.length < 24) {
+    if (id.length !== 24) {
       throw new WrongDataError('WrongDataError');
     }
     Card.findByIdAndUpdate(
@@ -40,6 +41,9 @@ const addLike = (req, res) => {
       { new: true },
     )
       .then((card) => {
+        if (!card) {
+          throw new NotFoundError('NotFoundError');
+        }
         res.send({ data: card });
       })
       .catch((err) => {
@@ -47,8 +51,12 @@ const addLike = (req, res) => {
           res.status(404).send({ message: 'Карточка не найдена' });
         } else if (err.name === 'ValidationError') {
           res.status(400).send({ message: 'Переданы некорректные данные' });
+        } else if (err.name === 'NotFoundError') {
+          res.status(404).send({ message: 'Карточка не найдена' });
+        } else if (err.name === 'WrongDataError') {
+          res.status(400).send({ message: 'Переданы некорректные данные' });
         } else {
-          res.status(500).send({ message: 'Произошла ошибка' });
+          res.status(500).send({ message: `Произошла ошибка ${err.name}` });
         }
       });
   } catch (err) {
@@ -59,21 +67,40 @@ const addLike = (req, res) => {
 };
 
 const deleteLike = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } },
-    { new: true },
-  )
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Карточка не найдена' });
-      } else if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
-      }
-    });
+  const id = req.params.cardId;
+  try {
+    if (id.length !== 24) {
+      throw new WrongDataError('WrongDataError');
+    }
+    Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $pull: { likes: req.user._id } },
+      { new: true },
+    )
+      .then((card) => {
+        if (!card) {
+          throw new NotFoundError('NotFoundError');
+        }
+        res.send({ data: card });
+      })
+      .catch((err) => {
+        if (err.name === 'CastError') {
+          res.status(404).send({ message: 'Карточка не найдена' });
+        } else if (err.name === 'ValidationError') {
+          res.status(400).send({ message: 'Переданы некорректные данные' });
+        } else if (err.name === 'NotFoundError') {
+          res.status(404).send({ message: 'Карточка не найдена' });
+        } else if (err.name === 'WrongDataError') {
+          res.status(400).send({ message: 'Переданы некорректные данные' });
+        } else {
+          res.status(500).send({ message: 'Произошла ошибка' });
+        }
+      });
+  } catch (err) {
+    if (err.name === 'WrongDataError') {
+      res.status(400).send({ message: 'Переданы некорректные данные' });
+    }
+  }
 };
 
 module.exports = {
