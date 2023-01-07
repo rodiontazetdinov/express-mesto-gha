@@ -24,9 +24,24 @@ const getCards = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.send({ data: card }))
-    .catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
+  const id = req.params.cardId;
+  try {
+    if (id.length !== 24) {
+      throw new WrongDataError('WrongDataError');
+    }
+    Card.findByIdAndRemove(req.params.cardId)
+      .then((card) => {
+        if (!card) {
+          throw new NotFoundError('NotFoundError');
+        }
+        res.send({ data: card });
+      })
+      .catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
+  } catch (err) {
+    if (err.name === 'WrongDataError') {
+      res.status(400).send({ message: 'Переданы некорректные данные' });
+    }
+  }
 };
 
 const addLike = (req, res) => {
