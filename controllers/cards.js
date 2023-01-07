@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const WrongDataError = require('../errors/WrongDataError');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -28,21 +29,33 @@ const deleteCard = (req, res) => {
 };
 
 const addLike = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Карточка не найдена' });
-      } else if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
-      }
-    });
+  const id = req.params.cardId;
+  try {
+    if (id.length < 24) {
+      throw new WrongDataError('WrongDataError');
+    }
+    Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $addToSet: { likes: req.user._id } },
+      { new: true },
+    )
+      .then((card) => {
+        res.send({ data: card });
+      })
+      .catch((err) => {
+        if (err.name === 'CastError') {
+          res.status(404).send({ message: 'Карточка не найдена' });
+        } else if (err.name === 'ValidationError') {
+          res.status(400).send({ message: 'Переданы некорректные данные' });
+        } else {
+          res.status(500).send({ message: 'Произошла ошибка' });
+        }
+      });
+  } catch (err) {
+    if (err.name === 'WrongDataError') {
+      res.status(400).send({ message: 'Переданы некорректные данные' });
+    }
+  }
 };
 
 const deleteLike = (req, res) => {
