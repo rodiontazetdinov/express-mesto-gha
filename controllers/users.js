@@ -1,20 +1,41 @@
+const UserNotFoundError = require('../errors/UserNotFoundError');
+const WrongDataError = require('../errors/WrongDataError');
 const User = require('../models/user');
 
 const getUser = (req, res) => {
   const id = req.params.userId;
-  // if (id === req.user._id) {
-  User.findById({ _id: id })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь не найден' });
-      } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
-      }
-    });
-  // } else {
-  //   throw new Error('Пользователь не авторизован');
-  // }
+  try {
+    // будущая проверка авторизации
+    if (id) {
+      User.findById({ _id: id })
+        .then((user) => {
+          if (!user && id.length < 24) {
+            throw new WrongDataError('WrongDataError');
+          }
+          if (!user) {
+            throw new UserNotFoundError('UserNotFoundError');
+          }
+          res.send({ data: user });
+        })
+        .catch((err) => {
+          if (err.name === 'CastError') {
+            res.status(400).send({ message: 'Переданы некорректные данные' });
+          } else if (err.name === 'ValidationError') {
+            res.status(400).send({ message: 'Переданы некорректные данные' });
+          } else if (err.name === 'WrongDataError') {
+            res.status(400).send({ message: 'Переданы некорректные данные' });
+          } else if (err.name === 'UserNotFoundError') {
+            res.status(404).send({ message: 'Пользователь не найден' });
+          } else {
+            res.status(500).send({ message: `Произошла ошибка ${err.name}` });
+          }
+        });
+    } else {
+      throw new Error('ValidationError');
+    }
+  } catch (err) {
+    res.status(400).send({ message: 'Переданы некорректные данные' });
+  }
 };
 
 const getUsers = (req, res) => {
