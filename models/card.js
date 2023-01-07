@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
-    minlenght: 2,
-    maxlenght: 30,
+    minlength: 2,
+    maxlength: 30,
     required: true,
   },
   link: {
