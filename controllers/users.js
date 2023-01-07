@@ -2,19 +2,19 @@ const User = require('../models/user');
 
 const getUser = (req, res) => {
   const id = req.params.userId;
-  if (id === req.user._id) {
-    User.findById({ _id: id })
-      .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.name === 'CastError') {
-          res.status(404).send({ message: 'Пользователь не найден' });
-        } else {
-          res.status(500).send({ message: 'Произошла ошибка' });
-        }
-      });
-  } else {
-    throw new Error('Пользователь не авторизован');
-  }
+  // if (id === req.user._id) {
+  User.findById({ _id: id })
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
+  // } else {
+  //   throw new Error('Пользователь не авторизован');
+  // }
 };
 
 const getUsers = (req, res) => {
