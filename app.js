@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 const { PORT = 3000 } = process.env;
 const URI = 'mongodb://localhost:27017/mestodb';
 

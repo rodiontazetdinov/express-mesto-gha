@@ -2,6 +2,7 @@
 const NotFoundError = require('../errors/NotFoundError');
 const WrongDataError = require('../errors/WrongDataError');
 const User = require('../models/user');
+const updateUserInfo = require('../helpers/updateUserInfo');
 
 const getUser = (req, res) => {
   const id = req.params.userId;
@@ -59,49 +60,11 @@ const createUser = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-  const { name, about } = req.body;
-  if (req.user._id) {
-    User.findByIdAndUpdate(
-      req.user._id,
-      { name, about },
-      { new: true, runValidators: true },
-    )
-      .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.name === 'CastError') {
-          res.status(404).send({ message: 'Пользователь не найден' });
-        } else if (err.name === 'ValidationError') {
-          res.status(400).send({ message: 'Переданы некорректные данные' });
-        } else {
-          res.status(500).send({ message: 'На сервере произошла ошибка' });
-        }
-      });
-  } else {
-    throw new Error('Пользователь не авторизован');
-  }
+  updateUserInfo(req, res, User, 'updateUser');
 };
 
 const updateAvatar = (req, res) => {
-  const { avatar } = req.body;
-  if (req.user._id) {
-    User.findByIdAndUpdate(
-      req.user._id,
-      { avatar },
-      { new: true, runValidators: true },
-    )
-      .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.name === 'CastError') {
-          res.status(404).send({ message: 'Пользователь не найден' });
-        } else if (err.name === 'ValidationError') {
-          res.status(400).send({ message: 'Переданы некорректные данные' });
-        } else {
-          res.status(500).send({ message: 'На сервере произошла ошибка' });
-        }
-      });
-  } else {
-    throw new Error('Пользователь не авторизован');
-  }
+  updateUserInfo(req, res, User, 'updateAvatar');
 };
 
 module.exports = {
