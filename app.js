@@ -1,7 +1,9 @@
 /* eslint-disable linebreak-style */
+require('dotenv').config();
+
 const {
-  PORT = 3000,
-  URI = 'mongodb://localhost:27017/mestodb',
+  PORT,
+  URI,
 } = process.env;
 
 // временный id
