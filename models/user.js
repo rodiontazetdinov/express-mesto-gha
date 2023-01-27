@@ -1,4 +1,6 @@
+/* eslint-disable linebreak-style */
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -14,6 +16,18 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   avatar: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: (email) => validator.isEmail(email),
+    },
+  },
+  password: {
     type: String,
     required: true,
   },
