@@ -1,5 +1,6 @@
 /* eslint-disable linebreak-style */
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const NotFoundError = require('../errors/NotFoundError');
 const WrongDataError = require('../errors/WrongDataError');
 const User = require('../models/user');
@@ -81,10 +82,27 @@ const updateAvatar = (req, res) => {
   updateUserInfo(req, res, User, 'updateAvatar');
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' },
+      );
+      res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+
 module.exports = {
   getUser,
   getUsers,
   createUser,
   updateUser,
   updateAvatar,
+  login,
 };
