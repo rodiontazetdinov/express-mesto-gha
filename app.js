@@ -41,5 +41,9 @@ app.use('/:404', (req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+  console.log(`
+  Wake up, Neo...
+  The Matrix has you...
+  Follow the white rabbit.
+  Knock, knock, Neo.`);
 });
