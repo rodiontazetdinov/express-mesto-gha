@@ -86,14 +86,14 @@ const login = (req, res) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user._id);
       const token = jwt.sign(
         { _id: user._id },
         process.env.JWT_SECRET,
         { expiresIn: '7d' },
       );
-      console.log(token);
-      res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
+      res
+        .cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true })
+        .end();
     })
     .catch((err) => {
       res.status(401).send({ message: err.message });
