@@ -2,8 +2,8 @@
 require('dotenv').config();
 
 const {
-  PORT,
-  URI,
+  PORT = 3000,
+  URI = 'mongodb://localhost:27017/mestodb',
 } = process.env;
 
 // временный id
