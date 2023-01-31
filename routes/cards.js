@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 const cardsRouter = require('express').Router();
 const {
   getCards,
